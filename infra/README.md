@@ -1,0 +1,7 @@
+# infra
+
+## Variables
+
+- **TF_VAR_BACKEND_BUCKET_NAME**
+- **ENV_NAME**
+- **TF_VAR_GOOGLE_APPLICATION_CREDENTIALS**
