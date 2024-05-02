@@ -1,0 +1,10 @@
+dbt_assets:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('PROJECT_ID') }}"
+      dataset: "{{ env_var('DBT_DATASET_ID')}}"
+      threads: 2 # Must be a value of 1 or greater
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
