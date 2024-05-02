@@ -22,20 +22,15 @@ terraform {
 }
 
 
-resource "google_storage_bucket" "bronze_bucket" {
-  name          = var.BRONZE_BUCKET_NAME
+resource "google_storage_bucket" "raw_bucket" {
+  name          = var.RAW_BUCKET_NAME
   location      = var.REGION_ID
   force_destroy = true
 }
 
-resource "google_storage_bucket" "silver_bucket" {
-  name          = var.SILVER_BUCKET_NAME
-  location      = var.REGION_ID
-  force_destroy = true
-}
 
-resource "google_storage_bucket" "gold_bucket" {
-  name          = var.GOLD_BUCKET_NAME
+resource "google_storage_bucket" "staging_bucket" {
+  name          = var.STAGING_BUCKET_NAME
   location      = var.REGION_ID
   force_destroy = true
 }

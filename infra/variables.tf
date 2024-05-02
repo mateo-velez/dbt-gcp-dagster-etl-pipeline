@@ -20,20 +20,16 @@ variable "BACKEND_BUCKET_NAME" {
   type        = string
 }
 
-variable "BRONZE_BUCKET_NAME" {
-  description = "The name of the bronze bucket"
+variable "RAW_BUCKET_NAME" {
+  description = "The name of the raw bucket"
   type        = string
 }
 
-variable "SILVER_BUCKET_NAME" {
-  description = "The name of the silver bucket"
+variable "STAGING_BUCKET_NAME" {
+  description = "The name of the staging bucket"
   type        = string
 }
 
-variable "GOLD_BUCKET_NAME" {
-  description = "The name of the gold bucket"
-  type        = string
-}
 
 variable "MISC_BUCKET_NAME" {
   description = "The name of the miscellaneous bucket"
