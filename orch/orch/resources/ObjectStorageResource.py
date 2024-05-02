@@ -4,7 +4,7 @@ from dagster import ConfigurableResource
 from google.cloud import storage
 import os
 import tempfile
-from ..config.constants import BRONZE_BUCKET_NAME
+from ..config.constants import RAW_BUCKET_NAME
 
 class ObjectStorageResource(ConfigurableResource):
     """Provides functions for interacting with object storage buckets."""
@@ -286,10 +286,10 @@ if __name__ == "__main__":
             f.write("This is file 2")
 
         # Initialize the ObjectStorageResource
-        resource = ObjectStorageResource(bucket_name=BRONZE_BUCKET_NAME)
+        resource = ObjectStorageResource(bucket_name=RAW_BUCKET_NAME)
 
         # Upload the files to the bucket
-        logging.debug(f"Uploading files to bucket: {BRONZE_BUCKET_NAME}")
+        logging.debug(f"Uploading files to bucket: {RAW_BUCKET_NAME}")
         resource.put(temp_dir)
 
         # List the objects in the bucket

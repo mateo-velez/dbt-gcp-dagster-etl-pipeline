@@ -4,8 +4,8 @@ from dagster import ConfigurableResource
 import logging
 from ..config.constants import (
     PROJECT_ID,
-    BRONZE_BUCKET_NAME,
-    BRONZE_DATASET_ID,
+    RAW_BUCKET_NAME,
+    DBT_DATASET_ID,
 )
 from google.cloud import bigquery
 import json
@@ -210,7 +210,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
 
     warehouse = BigQueryDatasetResource(
-        project_id=PROJECT_ID, dataset_id=BRONZE_DATASET_ID
+        project_id=PROJECT_ID, dataset_id=DBT_DATASET_ID
     )
 
     dummy_table = "dummy_user"
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
     warehouse.export_data_to_uri(
         dummy_table,
-        f"gs://{BRONZE_BUCKET_NAME}/{dummy_table}/export_timestamp={tm}/*.parquet",
+        f"gs://{RAW_BUCKET_NAME}/{dummy_table}/export_timestamp={tm}/*.parquet",
         "parquet",
     )
 
@@ -243,7 +243,7 @@ if __name__ == "__main__":
 
     warehouse.create_external_table(
         f"external_{dummy_table}",
-        f"gs://{BRONZE_BUCKET_NAME}/{dummy_table}/*.parquet",
+        f"gs://{RAW_BUCKET_NAME}/{dummy_table}/*.parquet",
         format="PARQUET",
         partitioned=True,
     )
@@ -265,6 +265,6 @@ if __name__ == "__main__":
 
     warehouse.load_truncate_data_from_uris(
         f"loaded_{dummy_table}",
-        f"gs://{BRONZE_BUCKET_NAME}/{dummy_table}/*.parquet",
+        f"gs://{RAW_BUCKET_NAME}/{dummy_table}/*.parquet",
         "parquet",
     )
