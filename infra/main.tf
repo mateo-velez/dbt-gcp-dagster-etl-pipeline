@@ -47,14 +47,6 @@ resource "google_storage_bucket" "misc_bucket" {
   force_destroy = true
 }
 
-resource "google_bigquery_dataset" "bronze_dataset" {
-  dataset_id = var.BRONZE_DATASET_ID
-}
-
-resource "google_bigquery_dataset" "silver_dataset" {
-  dataset_id = var.SILVER_DATASET_ID
-}
-
-resource "google_bigquery_dataset" "gold_dataset" {
-  dataset_id = var.GOLD_DATASET_ID
+resource "google_bigquery_dataset" "dbt_dataset" {
+  dataset_id = var.DBT_DATASET_ID
 }

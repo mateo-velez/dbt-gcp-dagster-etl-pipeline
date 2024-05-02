@@ -40,17 +40,7 @@ variable "MISC_BUCKET_NAME" {
   type        = string
 }
 
-variable "BRONZE_DATASET_ID" {
-  description = "The ID of the bronze dataset"
-  type        = string
-}
-
-variable "SILVER_DATASET_ID" {
-  description = "The ID of the silver dataset"
-  type        = string
-}
-
-variable "GOLD_DATASET_ID" {
-  description = "The ID of the gold dataset"
+variable "DBT_DATASET_ID" {
+  description = "The ID of the dbt dataset"
   type        = string
 }
