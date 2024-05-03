@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 # Credentials path
 export GOOGLE_APPLICATION_CREDENTIALS="/etc/gcp/keys/dagster.json"

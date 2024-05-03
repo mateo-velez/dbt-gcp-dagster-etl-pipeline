@@ -15,9 +15,16 @@ RUN pip install . \
     dagster-postgres \
     dagster-docker
 
+
 ENV PROJECT_ID="_"
-ENV GOOGLE_APPLICATION_CREDENTIALS="_"
+ENV ENVIRONMENT="_"
+ENV REGION="_"
+ENV RAW_BUCKET_NAME="_"
+ENV STAGING_BUCKET_NAME="_"
+ENV MISC_BUCKET_NAME="_"
 ENV DBT_DATASET_ID="_"
+ENV GOOGLE_APPLICATION_CREDENTIALS="_"
+
 
 RUN cd dbt_assets && dbt parse
 

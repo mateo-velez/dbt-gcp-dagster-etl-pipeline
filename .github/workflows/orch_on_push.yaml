@@ -56,3 +56,5 @@ jobs:
               push: true
               target: prod
               tags: skppy/${{ vars.DOCKER_HUB }}:latest
+
+          - 
