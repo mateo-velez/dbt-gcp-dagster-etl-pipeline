@@ -1,7 +1,8 @@
 name: infra_on_push
 
 on:
-  dev
+  push:
+    branches: dev
 # on:
 #     pull_request:
 #       branches:
