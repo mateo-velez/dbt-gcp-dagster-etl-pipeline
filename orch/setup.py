@@ -5,7 +5,6 @@ setup(
     packages=find_packages(exclude=["orch_tests"]),
     install_requires=[
         "dagster",
-        "nltk",
         "pandas",
         "google-cloud-storage",
         "google-cloud-dataproc",

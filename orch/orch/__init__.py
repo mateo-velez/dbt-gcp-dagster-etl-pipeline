@@ -5,10 +5,10 @@ from .resources.BigQueryDataset import BigQueryDatasetResource
 from .resources.SparkClusterResource import SparkClusterResource
 from .resources.ObjectStorageResource import ObjectStorageResource
 from .resources.AlbionAPIResource import AlbionAPIResource
-from .assets import dbt
+from .assets import dbt,albion
 
 
-all_assets = load_assets_from_modules([dbt])
+all_assets = load_assets_from_modules([dbt,albion])
 
 defs = Definitions(
     assets=all_assets,
