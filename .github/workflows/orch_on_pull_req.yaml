@@ -1,0 +1,25 @@
+name: orch_on_pull_req
+
+on:
+    pull_request:
+      branches:
+          - main
+      paths:
+          - orch/*
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+
+          - name: Build imager - target test
+            run: |
+              cd orch/
+              docker build --target test -t image:test .
+            
+          - name: Run test
+            run: |
+              docker run image:test
