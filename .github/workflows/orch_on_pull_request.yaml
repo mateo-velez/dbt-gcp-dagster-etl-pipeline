@@ -1,4 +1,4 @@
-name: orch_on_pull_req
+name: orch_on_pull_request
 
 on:
     pull_request:
