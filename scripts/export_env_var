@@ -1,0 +1,23 @@
+
+# Credentials path
+export GOOGLE_APPLICATION_CREDENTIALS="/etc/gcp/keys/dagster.json"
+export TF_VAR_GOOGLE_APPLICATION_CREDENTIALS="/etc/gcp/keys/terraform.json"
+
+# Bucket names
+export RAW_BUCKET_NAME="${PROJECT_NAME}-${ENV_NAME}-raw"
+export STAGING_BUCKET_NAME="${PROJECT_NAME}-${ENV_NAME}-staging"
+export MISC_BUCKET_NAME="${PROJECT_NAME}-${ENV_NAME}-misc"
+
+# Dataset names
+export DBT_DATASET_ID="${ENV_NAME}_dbt"
+
+# Terraform variables
+export TF_VAR_PROJECT_ID="${PROJECT_ID}"
+export TF_VAR_REGION_ID="${REGION_ID}"
+
+
+export TF_VAR_RAW_BUCKET_NAME="${RAW_BUCKET_NAME}"
+export TF_VAR_STAGING_BUCKET_NAME="${STAGING_BUCKET_NAME}"
+export TF_VAR_MISC_BUCKET_NAME="${MISC_BUCKET_NAME}"
+
+export TF_VAR_DBT_DATASET_ID="${DBT_DATASET_ID}"
