@@ -1,0 +1,7 @@
+version: 2
+
+models:
+- name: inc_albion_union_all_market_price
+  meta:
+    dagster:
+      group: albion
