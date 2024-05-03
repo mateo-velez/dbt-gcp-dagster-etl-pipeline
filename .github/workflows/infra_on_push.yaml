@@ -1,0 +1,48 @@
+name: infra_on_push
+
+on:
+    push:
+      branches:
+          - main
+      paths:
+          - infra/*
+
+env:
+  PROJECT_NAME: ${{ vars.PROJECT_NAME }} 
+  PROJECT_ID: ${{ vars.PROJECT_ID }} 
+  REGION_ID: ${{ vars.REGION_ID }} 
+  ENV_NAME: ${{ vars.ENV_NAME }} 
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Setup
+          run: |
+            sudo mkdir -p $(dirname "$TF_VAR_GOOGLE_APPLICATION_CREDENTIALS")
+            echo "$TERRAFORM_CREDENTIALS_BASE64" | base64 --decode | sudo tee "$TF_VAR_GOOGLE_APPLICATION_CREDENTIALS" > /dev/null
+            scripts/build_from_template infra/tpl-backend.conf
+          env:
+            TERRAFORM_CREDENTIALS_BASE64: ${{ secrets.TERRAFORM_CREDENTIALS_BASE64 }} 
+            DAGSTER_CREDENTIALS_BASE64: ${{ secrets.DAGSTER_CREDENTIALS_BASE64 }} 
+            TF_VAR_BACKEND_BUCKET_NAME: ${{ vars.TF_VAR_BACKEND_BUCKET_NAME }}
+
+        
+        - name: Init terraform
+          run: |
+            cd infra/
+            terraform init -backend-config backend.conf -reconfigure
+
+
+        - name: Apply terraform
+          run: |
+            source scripts/export_env_var
+            cd infra/
+            terraform apply -auto-approve
+            
+
+        
