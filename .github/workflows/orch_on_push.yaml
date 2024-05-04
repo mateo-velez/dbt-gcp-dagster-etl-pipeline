@@ -61,7 +61,7 @@ jobs:
               context: orch/
               push: true
               target: prod
-              tags: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_HUB }}:${{ github.sha }}
+              tags: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}:${{ github.sha }}
 
           - name: Set up key
             run: |
