@@ -91,9 +91,9 @@ jobs:
           - name: Build tpl
             run: |
               ./scripts/export_env_var
-              ./build_from_template kube-files/tpl-dagster-code-configmap.yaml
-              ./build_from_template kube-files/tpl-dagster-code-secret.yaml
-              ./build_from_template kube-files/tpl-dagster-helm-values.yaml
+              ./scripts/build_from_template kube-files/tpl-dagster-code-configmap.yaml
+              ./scripts/build_from_template kube-files/tpl-dagster-code-secret.yaml
+              ./scripts/build_from_template kube-files/tpl-dagster-helm-values.yaml
             env:
               DAGSTER_CREDENTIALS_BASE64: ${{ secrets.DAGSTER_CREDENTIALS_BASE64 }}
               IMAGE: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}
