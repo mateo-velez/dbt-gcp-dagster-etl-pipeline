@@ -1,14 +1,12 @@
 name: infra_on_pull_request
 
+
 on:
-  push:
-    branches: dev
-# on:
-#     pull_request:
-#       branches:
-#           - main
-#       paths:
-#           - infra/*
+    pull_request:
+      branches:
+          - main
+      paths:
+          - infra/*
 
 env:
   PROJECT_NAME: ${{ vars.PROJECT_NAME }} 

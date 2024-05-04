@@ -1,18 +1,24 @@
 name: orch_on_push
 
+
 on:
-    push:
-      branches:
-          - main
-      paths:
-          - orch/*
-          -
+  push:
+    branches:
+        - dev
+# on:
+#     push:
+#       branches:
+#           - main
+#       paths:
+#           - orch/*
 
 env:
   PROJECT_NAME: ${{ vars.PROJECT_NAME }} 
   PROJECT_ID: ${{ vars.PROJECT_ID }} 
   REGION_ID: ${{ vars.REGION_ID }} 
   ENV_NAME: ${{ vars.ENV_NAME }} 
+  GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS: /etc/gcp/keys/gh_actions.json
+
 
 jobs:
     build:
@@ -31,14 +37,14 @@ jobs:
           - name: Login to DockerHub
             uses: docker/login-action@v1
             with:
-              username: ${{ secrets.DOCKER_USER }}
+              username: ${{ vars.DOCKER_USER }}
               password: ${{ secrets.DOCKER_TOKEN }}
     
           
-          - name: Build and export to Docker
+          - name: Build test image
             uses: docker/build-push-action@v2
             with:
-              context: .
+              context: orch/
               load: true
               target: test
               tags: image:test
@@ -46,15 +52,56 @@ jobs:
     
           - name: Test
             run: |
-              #docker run --rm skppy/sherlock:test
+              docker run --rm image:test
     
           
           - name: Build and push
             uses: docker/build-push-action@v2
             with:
-              context: .
+              context: orch/
               push: true
               target: prod
-              tags: skppy/${{ vars.DOCKER_HUB }}:latest
+              tags: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_HUB }}:${{ github.sha }}
 
-          - 
+          - name: Set up key
+            run: |
+              sudo mkdir -p $(dirname "$GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS")
+              echo "$GH_ACTIONS_CREDENTIALS_BASE64" | base64 --decode | sudo tee "$GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS" > /dev/null
+            env:
+              GH_ACTIONS_CREDENTIALS_BASE64: ${{ secrets.ACTIONS_GITHUB_CREDENTIALS_BASE64 }}              
+              
+          - name: Auth gcloud
+            run: |
+              gcloud auth activate-service-account --key-file $GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS
+              gcloud config set project $PROJECT_ID
+
+          - name: Set up kubectl
+            run: |
+                ./scripts/deb/gke_gcloud_auth_plugin_install.bash
+                gcloud container clusters get-credentials $GKE_CLUSTER_NAME --region=$REGION_ID --project=$PROJECT_ID
+            env:
+              GKE_CLUSTER_NAME: ${{ vars.GKE_CLUSTER_NAME }}
+
+          - name: Set up helm
+            run: |
+                ./scripts/deb/helm_install.bash
+                helm repo add dagster https://dagster-io.github.io/helm
+                helm repo update
+          
+          - name: Build tpl
+            run: |
+              ./export_env_var
+              ./build_from_template kube-files/tpl-dagster-code-configmap.yaml
+              ./build_from_template kube-files/tpl-dagster-code-secret.yaml
+              ./build_from_template kube-files/tpl-dagster-helm-values.yaml
+            env:
+              DAGSTER_CREDENTIALS_BASE64: ${{ secrets.DAGSTER_CREDENTIALS_BASE64 }}
+              IMAGE: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_HUB }}
+              TAG: ${{ github.sha }}
+
+
+          - name: Deploy
+            run: |
+              kubectl apply -f kube-files/dagster-code-configmap.yaml
+              kubectl apply -f kube-files/dagster-code-secret.yaml
+              helm upgrade --install dagster dagster/dagster -f kube-files/dagster-helm-values.yaml

@@ -1,14 +1,11 @@
 name: infra_on_push
 
 on:
-  push:
-    branches: dev
-# on:
-#     pull_request:
-#       branches:
-#           - main
-#       paths:
-#           - infra/*
+    pull_request:
+      branches:
+          - main
+      paths:
+          - infra/*
 
 
 env:
