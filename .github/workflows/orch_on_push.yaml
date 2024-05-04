@@ -68,7 +68,7 @@ jobs:
               sudo mkdir -p $(dirname "$GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS")
               echo "$GH_ACTIONS_CREDENTIALS_BASE64" | base64 --decode | sudo tee "$GH_ACTIONS_GOOGLE_APPLICATION_CREDENTIALS" > /dev/null
             env:
-              GH_ACTIONS_CREDENTIALS_BASE64: ${{ secrets.ACTIONS_GITHUB_CREDENTIALS_BASE64 }}              
+              GH_ACTIONS_CREDENTIALS_BASE64: ${{ secrets.GH_ACTIONS_CREDENTIALS_BASE64 }}              
               
           - name: Auth gcloud
             run: |
