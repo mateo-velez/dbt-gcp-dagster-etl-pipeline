@@ -90,7 +90,7 @@ jobs:
           
           - name: Build tpl
             run: |
-              ./export_env_var
+              ./scripts/export_env_var
               ./build_from_template kube-files/tpl-dagster-code-configmap.yaml
               ./build_from_template kube-files/tpl-dagster-code-secret.yaml
               ./build_from_template kube-files/tpl-dagster-helm-values.yaml
