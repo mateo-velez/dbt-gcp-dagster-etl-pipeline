@@ -96,7 +96,7 @@ jobs:
               ./build_from_template kube-files/tpl-dagster-helm-values.yaml
             env:
               DAGSTER_CREDENTIALS_BASE64: ${{ secrets.DAGSTER_CREDENTIALS_BASE64 }}
-              IMAGE: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_HUB }}
+              IMAGE: ${{ vars.DOCKER_USER }}/${{ vars.DOCKER_REPO }}
               TAG: ${{ github.sha }}
 
 
