@@ -1,7 +1,7 @@
 import json
 import os
 from typing import List
-from dagster import asset, AssetExecutionContext, DailyPartitionsDefinition
+from dagster import BackfillPolicy, asset, AssetExecutionContext, DailyPartitionsDefinition
 from ..utils.pandas import read_partitioned, write_partitioned
 from ..resources.AlbionAPIResource import AlbionAPIResource
 from ..resources.ObjectStorageResource import ObjectStorageResource
@@ -34,8 +34,12 @@ def get_concat_items_chunks(json_file_path: str, max_size: int = 3500) -> List[s
     return chunks
 
 
+def subs_days(date:str,n:int):
+    return datetime.strptime(date, "%Y-%m-%d") - timedelta(days=n).strftime("%Y-%m-%d")
+
 @asset(
     partitions_def=DailyPartitionsDefinition(start_date="2024-01-01"),
+    backfill_policy=BackfillPolicy.single_run(),
     group_name="albion",
 )
 def albion_api_historical_prices(
@@ -47,10 +51,8 @@ def albion_api_historical_prices(
     current_timestamp = get_utc_timestamp()
     raw_dir, _ = make_workspace_dirs()
 
-    to_date = context.partition_key
-    from_date = (datetime.strptime(to_date, "%Y-%m-%d") - timedelta(days=1)).strftime(
-        "%Y-%m-%d"
-    )
+    from_date,to_date = context.partition_time_window
+    from_date = subs_days(from_date,1)
 
     chunks = get_concat_items_chunks("./files/items_id.json")
 
