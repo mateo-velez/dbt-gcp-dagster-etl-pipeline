@@ -35,7 +35,7 @@ def get_concat_items_chunks(json_file_path: str, max_size: int = 3500) -> List[s
 
 
 def subs_days(date:str,n:int):
-    return datetime.strptime(date, "%Y-%m-%d") - timedelta(days=n).strftime("%Y-%m-%d")
+    return (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=n)).strftime("%Y-%m-%d")
 
 @asset(
     partitions_def=DailyPartitionsDefinition(start_date="2024-01-01"),
@@ -52,35 +52,33 @@ def albion_api_historical_prices(
     raw_dir, _ = make_workspace_dirs()
 
     from_date,to_date = context.partition_time_window
-    from_date = subs_days(from_date,1)
+
+    from_date=subs_days(from_date.strftime("%Y-%m-%d"),1)
+    to_date=to_date.strftime("%Y-%m-%d")
 
     chunks = get_concat_items_chunks("./files/items_id.json")
 
     context.log.info(
         f"Fetching prices from API: from_date={from_date}, to_date={to_date}, len(chunks)={len(chunks)}"
     )
-    dfs = [
-        albion_api.get_historical_prices(
+    for chunk in chunks:
+        df = albion_api.get_historical_prices(
             from_date=from_date, to_date=to_date, items=chunk
         )
-        for chunk in chunks
-    ]
-
-    df = pd.concat(dfs)
-
-    context.log.info(
+        context.log.info(
         f"Writing dataframe to disk: len(df)={len(df)}, df.columns={df.columns}, df.dtypes={df.dtypes}, current_timestmap={current_timestamp}"
-    )
-    write_partitioned(
-        df,
-        f"{raw_dir}/{name}/ingestion_timestamp={current_timestamp}",
-        [],
-        lambda df, path: df.to_parquet(path, compression="snappy", index=False),
-        suffix="parquet",
-    )
+        ) 
+        write_partitioned(
+            df,
+            f"{raw_dir}/{name}/ingestion_timestamp={current_timestamp}",
+            [],
+            lambda df, path: df.to_parquet(path, compression="snappy", index=False),
+            suffix="parquet",
+        )
 
     context.log.info(f"Uploading files to raw")
     raw.put(raw_dir)
+    return None
 
 
 @asset(deps=[albion_api_historical_prices], group_name="albion")

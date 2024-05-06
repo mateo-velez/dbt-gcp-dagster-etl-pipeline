@@ -68,7 +68,7 @@ def write_partitioned(
 
     """
     if len(partition_columns) == 0:
-        os.makedirs(path)
+        os.makedirs(path, exist_ok=True)
         write(df,os.path.join(path,f"{uuid.uuid4()}.{suffix}"))
     else:
         assert set(partition_columns).issubset(
