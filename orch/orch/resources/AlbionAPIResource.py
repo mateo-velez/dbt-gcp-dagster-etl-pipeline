@@ -3,6 +3,7 @@ import pandas as pd
 from typing import List
 import requests
 import json
+from datetime import datetime,timedelta
 
 
 class AlbionAPIResource(ConfigurableResource):
@@ -40,7 +41,10 @@ class AlbionAPIResource(ConfigurableResource):
                 9392          53       3573  2024-01-31T00:00:00  Thetford Portal  T4_BAG       4
         """
         items_str = ",".join(items)
-        url = f"https://{self.host}/api/v2/stats/history/{items_str}.json?date={from_date}&end_date={to_date}"
+
+        from_date_iso = datetime.strptime(from_date, "%Y-%m-%d").isoformat()
+        to_date_iso = (datetime.strptime(to_date, "%Y-%m-%d")-timedelta(seconds=1)).isoformat()
+        url = f"https://{self.host}/api/v2/stats/history/{items_str}.json?date={from_date_iso}&end_date={to_date_iso}"
         assert len(url) < 4096, "URL too long"
         response = requests.get(url, headers={"Accept-Encoding": "gzip"})
         response.raise_for_status()
@@ -75,7 +79,10 @@ class AlbionAPIResource(ConfigurableResource):
                 716   4990  2024-01-31T00:00:00
 
             """
-        url = f"https://{self.host}/api/v2/stats/gold.json?date={from_date}&end_date={to_date}"
+        
+        from_date_iso = datetime.strptime(from_date, "%Y-%m-%d").isoformat()
+        to_date_iso = (datetime.strptime(to_date, "%Y-%m-%d")-timedelta(seconds=1)).isoformat()
+        url = f"https://{self.host}/api/v2/stats/gold.json?date={from_date_iso}&end_date={to_date_iso}"
         response = requests.get(url, headers={"Accept-Encoding": "gzip"})
         response.raise_for_status()
         return pd.json_normalize(json.loads(response.text))
@@ -91,3 +98,6 @@ if __name__ == "__main__":
         "2024-01-01", "2024-01-31", ["T4_BAG", "T4_2H_CLAYMORE"]
     )
     print(historical_prices)
+
+
+    

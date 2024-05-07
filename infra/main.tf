@@ -26,6 +26,7 @@ resource "google_storage_bucket" "raw_bucket" {
   name          = var.RAW_BUCKET_NAME
   location      = var.REGION_ID
   force_destroy = true
+  
 }
 
 

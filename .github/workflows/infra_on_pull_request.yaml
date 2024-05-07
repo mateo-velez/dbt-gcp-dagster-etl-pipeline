@@ -1,5 +1,6 @@
 name: infra_on_pull_request
 
+
 on:
     pull_request:
       branches:
@@ -23,12 +24,12 @@ jobs:
 
         - name: Setup
           run: |
+            source scripts/export_env_var
             sudo mkdir -p $(dirname "$TF_VAR_GOOGLE_APPLICATION_CREDENTIALS")
             echo "$TERRAFORM_CREDENTIALS_BASE64" | base64 --decode | sudo tee "$TF_VAR_GOOGLE_APPLICATION_CREDENTIALS" > /dev/null
             scripts/build_from_template infra/tpl-backend.conf
           env:
             TERRAFORM_CREDENTIALS_BASE64: ${{ secrets.TERRAFORM_CREDENTIALS_BASE64 }} 
-            DAGSTER_CREDENTIALS_BASE64: ${{ secrets.DAGSTER_CREDENTIALS_BASE64 }} 
             TF_VAR_BACKEND_BUCKET_NAME: ${{ vars.TF_VAR_BACKEND_BUCKET_NAME }}
 
         

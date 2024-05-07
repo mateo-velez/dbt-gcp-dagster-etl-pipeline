@@ -15,11 +15,6 @@ variable "GOOGLE_APPLICATION_CREDENTIALS" {
 }
 
 
-variable "BACKEND_BUCKET_NAME" {
-  description = "The name of the backend bucket"
-  type        = string
-}
-
 variable "RAW_BUCKET_NAME" {
   description = "The name of the raw bucket"
   type        = string
